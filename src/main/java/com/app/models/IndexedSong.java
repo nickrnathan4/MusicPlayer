@@ -1,17 +1,29 @@
-package app;
+package com.app.models;
 
 import java.util.List;
 
-class IndexedSong {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="IndexedSong")
+public class IndexedSong {
+
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int songId; 
+	
 	private String songTitle;
     private String songArtist;
     private String songPath;
- 	private int songId; 
+    
+    @OneToMany(mappedBy="song")
     private List<KeyPoint> keyPoints;
-
-    // Default Constructor
-    public IndexedSong() {}
 
     // Getters
     public int getSongId() {

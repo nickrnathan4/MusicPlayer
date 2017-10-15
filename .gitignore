@@ -16,6 +16,9 @@
 bin/
 gen/
 
+# Config Files
+*.properties
+
 # BlueJ files
 *.ctxt
 

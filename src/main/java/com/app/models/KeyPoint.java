@@ -1,14 +1,26 @@
-package app;
+package com.app.models;
 
-class KeyPoint {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="KeyPoint")
+public class KeyPoint {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 	private int value;
  	private int time;
+ 	
+ 	@ManyToOne
+    @JoinColumn(name="songId", nullable=false)
     private IndexedSong song;
-
-    // Default Constructor
-    public KeyPoint() {}
 
     // Getters
     public int getId() {
