@@ -70,7 +70,25 @@ public class SongDAL {
 	}
 
 	@SuppressWarnings("unchecked")
-	public IndexedSong getSong(String title) {
+	public IndexedSong getSong(int songId) {
+		
+		IndexedSong song = null;
+	    
+		try{
+	    	String query = "FROM IndexedSong AS Song WHERE Song.songId = ?";
+	    	List<IndexedSong> songs = entityManager.createQuery(query).setParameter(1, songId).getResultList();
+	    	if(!songs.isEmpty()){
+	    		song = songs.get(0);
+	    	}	    	
+	    } 
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }
+	    return song;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public IndexedSong getSongByTitle(String title) {
 		
 		IndexedSong song = null;
 	    
@@ -108,7 +126,7 @@ public class SongDAL {
 	    List<KeyPoint> kps = null;
 	    
 	    try{
-        	IndexedSong song = getSong(title);
+        	IndexedSong song = getSongByTitle(title);
     		kps = song.getKeyPoints();
     		//Hibernate.initialize(kps); // eagerly evaluate	
 	    } 
@@ -125,7 +143,7 @@ public class SongDAL {
 	    
 	    try{
 	    	
-	    	IndexedSong song = getSong(title);
+	    	IndexedSong song = getSongByTitle(title);
 	    	
 	    	if(song != null) {
 		    	

@@ -1,33 +1,75 @@
 package com.app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.DAL.SongDAL;
 import com.app.models.IndexedSong;
+import com.app.services.SongController;
 
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
-@RestController
+@Controller
 public class AppController {
 	
 	@Autowired
 	private SongDAL songDAL;
+
+	public Object monitor = new Object();
+	public SongController controller = new SongController(monitor);
 	
     @RequestMapping("/")
-    public String index() {
-        
-    	String mySongs = "";
-    	
-        List<IndexedSong> songs = songDAL.getSongs(); 
-    	
-        for(IndexedSong song : songs){
-        	mySongs = mySongs + " | " + song.getSongTitle();
-        }
-    	
-    	return mySongs;
+    public String index(Model model) {
+            	
+        List<IndexedSong> songs = songDAL.getSongs();           
+        model.addAttribute("songs", songs); 
+    	return "index";
     }
-
+    
+    @PostMapping("/play")
+    public String play(@RequestParam("songId") String songId) {    	
+		try {
+			if(controller.isPaused()){
+				controller.resume();
+			}
+			else {
+				String fname = songDAL.getSong(Integer.parseInt(songId)).getSongPath();
+				if(!fname.isEmpty()) {
+					Resource audioFile = new ClassPathResource("audio/" + fname);
+					if(controller.loadFile(audioFile.getFile()) ){
+						controller.play();
+					}
+				}
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}		
+		
+		return "index :: songlist";
+    }
+    
+    @RequestMapping("/pause")
+    public String pause() {
+    	if(!controller.isPaused()){
+    		controller.pause();
+    	}
+    	return "index :: songlist";
+    }
+  
+    @RequestMapping("/stop")
+    public String stop() {
+    	if(controller.isRunning()){
+			controller.stop();
+		}
+    	
+    	return "index :: songlist";
+    }
 }

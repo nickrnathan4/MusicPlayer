@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="main-content">
+	    
+	    <h1>My Simple Music Player</h1>
+	    
+	    <table id="song-list" class="table" th:fragment="songlist">
+	      <tr>
+	        <th>Title</th>
+	        <th>Artist</th>
+	        <th></th>
+	      </tr>
+	      <tr th:each="song : ${songs}">
+	        <td th:text="${song.songTitle}">Title ...</td>
+	        <td th:text="${song.songArtist}">Artist ...</td>	        
+	      	<td>
+	  			<button onClick="playback(this)" th:value="${song.songId}" class="btn-play btn-default">Play</button>	        
+	        	<button onClick="pause_playback(this)" th:value="${song.songId}" class="btn-pause btn-default" disabled="true">Pause</button>	
+	        	<button onClick="stop_playback(this)" th:value="${song.songId}" class="btn-stop btn-default">Stop</button>	
+	        </td>
+	      </tr>
+	    </table>
+ 
+ </div>
+ 
+<script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

@@ -13,7 +13,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 public class SongController implements Runnable { 
 
-	private boolean running, restart, paused;
+	boolean running, restart, paused;
 	private File file;
 	private int byteChunkSize = 4096;
 	private Thread t;
@@ -137,13 +137,21 @@ public class SongController implements Runnable {
 		}
 
 	}
+	
+	public boolean isPaused(){
+		return paused;
+	}
+	
+	public boolean isRunning(){
+		return running;
+	}
 
 
 	// ----------------------- PRIVATE METHODS ----------------------------- //
 
 
-	public boolean loadFile(String filePath){
-        file = new File(filePath);
+	public boolean loadFile(File fin){
+        file = fin;
         if(file.exists() && file.getName().toLowerCase().endsWith(".mp3") && !running){
             return true;
         }

@@ -35,7 +35,8 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("com.h2database:h2")
     runtime files('src/resources/config')
-    
+    runtime files('src/resources/audio')
+     
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     
     compile("org.springframework.boot:spring-boot-devtools") 
