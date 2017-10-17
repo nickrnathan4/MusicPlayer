@@ -1,46 +1,50 @@
 
-function playback(button) {
+$('#song-list').on('click', '.clickable-row', function(event) {
+  
+  if($(this).hasClass('td-selected')){
+  	$(this).removeClass('td-selected'); 
+  } 
+  else {
+    $(this).addClass('td-selected').siblings().removeClass('td-selected');
+  }
+});
 
-    var map = {};
-    map["songId"] = button.value;
 
-    $(".btn-play").prop("disabled", true);  
-    $(".btn-pause").prop("disabled", false); 
+function playback() {
 
-    $.post("/play", {"songId":button.value},
+	var songId = $(".td-selected").find('td:first').text();
+	console.log(songId);
+	$("#currently_playing").val(songId);
+    $("#btn-play").prop("disabled", true);  
+
+    $.post("/play", {"songId":songId},
 	    function(returnedData){
 		}).fail(function(xhr, status, error){
 		    console.log("ERROR: ",error);
-		    $(".btn-play").prop("disabled", false);
+		    $("#btn-play").prop("disabled", false);
 		});    
 
 }
 
-function pause_playback(button) {
+function pause_playback() {
 
-    var map = {};
-    map["songId"] = button.value;
+	var songId = $("#currently_playing").value;
+ 	$("#btn-play").prop("disabled", false); 
 
- 	$(".btn-pause").prop("disabled", true);
- 	$(".btn-play").prop("disabled", false); 
-
-    $.post("/pause", {"songId":button.value},
+    $.post("/pause", {"songId":songId},
 	    function(returnedData){
 		}).fail(function(xhr, status, error){
 		    console.log("ERROR: ",error);
-		    $(".btn-pause").prop("disabled", false);
 		});    
 }
 
-function stop_playback(button) {
+function stop_playback() {
 
-    var map = {};
-    map["songId"] = button.value;
+	var songId = $("#currently_playing").value;
+    $("#currently_playing").val("");
+ 	$("#btn-play").prop("disabled", false); 
 
-    $(".btn-pause").prop("disabled", true);
- 	$(".btn-play").prop("disabled", false); 
-
-    $.post("/stop", {"songId":button.value},
+    $.post("/stop", {"songId":songId},
 	    function(returnedData){
 		}).fail(function(xhr, status, error){
 		    console.log("ERROR: ",error);

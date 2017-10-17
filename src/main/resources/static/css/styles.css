@@ -1,4 +1,11 @@
 
+table td.songId { display: none; }
+
 .main-content {
 	padding: 50px;
 }
+
+.td-selected {
+	background-color: #cee9f1!important;
+}
+

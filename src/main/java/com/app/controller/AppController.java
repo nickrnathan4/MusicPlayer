@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.DAL.SongDAL;
 import com.app.models.IndexedSong;
+import com.app.models.KeyPoint;
 import com.app.services.SongController;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class AppController {
     }
     
     @PostMapping("/play")
-    public String play(@RequestParam("songId") String songId) {    	
+    public String play(@RequestParam("songId") String songId, Model model) {    	
 		try {
 			if(controller.isPaused()){
 				controller.resume();
@@ -42,10 +43,17 @@ public class AppController {
 			else {
 				String fname = songDAL.getSong(Integer.parseInt(songId)).getSongPath();
 				if(!fname.isEmpty()) {
+					
+					// Play Song
 					Resource audioFile = new ClassPathResource("audio/" + fname);
 					if(controller.loadFile(audioFile.getFile()) ){
 						controller.play();
 					}
+					
+					// Display Song
+					List<KeyPoint> kps = songDAL.getKeyPoints(Integer.parseInt(songId));					
+					System.out.println(kps.size());
+					model.addAttribute("keypoints", kps);
 				}
 			}
 		}
@@ -53,7 +61,7 @@ public class AppController {
 			e.printStackTrace();
 		}		
 		
-		return "index :: songlist";
+		return "index";
     }
     
     @RequestMapping("/pause")

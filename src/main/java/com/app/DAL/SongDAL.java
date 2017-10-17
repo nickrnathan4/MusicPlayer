@@ -121,12 +121,12 @@ public class SongDAL {
 	    return songs;
 	}
 
-	public List<KeyPoint> getKeyPoints(String title) {
+	public List<KeyPoint> getKeyPoints(int songId) {
 
 	    List<KeyPoint> kps = null;
 	    
 	    try{
-        	IndexedSong song = getSongByTitle(title);
+        	IndexedSong song = getSong(songId);
     		kps = song.getKeyPoints();
     		//Hibernate.initialize(kps); // eagerly evaluate	
 	    } 

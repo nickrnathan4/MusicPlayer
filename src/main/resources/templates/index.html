@@ -11,24 +11,27 @@
 	    
 	    <h1>My Simple Music Player</h1>
 	    
-	    <table id="song-list" class="table" th:fragment="songlist">
-	      <tr>
-	        <th>Title</th>
-	        <th>Artist</th>
-	        <th></th>
-	      </tr>
-	      <tr th:each="song : ${songs}">
-	        <td th:text="${song.songTitle}">Title ...</td>
-	        <td th:text="${song.songArtist}">Artist ...</td>	        
-	      	<td>
-	  			<button onClick="playback(this)" th:value="${song.songId}" class="btn-play btn-default">Play</button>	        
-	        	<button onClick="pause_playback(this)" th:value="${song.songId}" class="btn-pause btn-default" disabled="true">Pause</button>	
-	        	<button onClick="stop_playback(this)" th:value="${song.songId}" class="btn-stop btn-default">Stop</button>	
-	        </td>
-	      </tr>
+	    <table id="song-list" class="table table-hover table-bordered" th:fragment="songlist">
+	       	<thead>
+		        <th>Title</th>
+		        <th>Artist</th>
+	       	</thead>
+        	<tbody>
+		      	<tr th:each="song : ${songs}" class="clickable-row">
+			      	<td th:text="${song.songId}" class="songId" type="hidden">Song Id ...</td>
+			        <td th:text="${song.songTitle}">Title ...</td>
+			        <td th:text="${song.songArtist}">Artist ...</td>	        	
+		      	</tr>
+	      	</tbody>
 	    </table>
- 
+	    <div class="control-panel">
+		    <button onClick="playback()" id="btn-play" class="btn btn-default">Play</button>	        
+	    	<button onClick="pause_playback()" id="btn-pause" class="btn btn-default">Pause</button>	
+	    	<button onClick="stop_playback()" id="btn-stop" class="btn btn-default">Stop</button>
+ 		</div>
  </div>
+
+ <input id="currently_playing" type="hidden" name="currently_playing"></input>
  
 <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/main.js}"></script>
