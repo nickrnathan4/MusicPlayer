@@ -14,6 +14,7 @@ import javax.sound.sampled.LineUnavailableException;
 public class SongController implements Runnable { 
 
 	boolean running, restart, paused;
+	private int songId;
 	private File file;
 	private int byteChunkSize = 4096;
 	private Thread t;
@@ -25,6 +26,7 @@ public class SongController implements Runnable {
 		paused = false;
         running = false;
         restart = false;
+        songId = 0;
         this.monitor = monitor;
 	}
 
@@ -66,6 +68,8 @@ public class SongController implements Runnable {
 	public void stop(){
         if(file != null){
             running = false;
+            paused = false;
+            songId = 0;
         }
     }
 
@@ -145,7 +149,14 @@ public class SongController implements Runnable {
 	public boolean isRunning(){
 		return running;
 	}
-
+	
+	public void setRunningSongId(int songId){
+		this.songId = songId;
+	}
+	
+	public int getRunningSongId(){
+		return songId;
+	}
 
 	// ----------------------- PRIVATE METHODS ----------------------------- //
 

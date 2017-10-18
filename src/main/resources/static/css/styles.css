@@ -5,7 +5,19 @@ table td.songId { display: none; }
 	padding: 50px;
 }
 
+#song-display {
+	height: 300px;
+	width: 1200px;
+}
+
 .td-selected {
 	background-color: #cee9f1!important;
 }
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1px;
+}
+
 

@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name="KeyPoint")
@@ -20,6 +22,7 @@ public class KeyPoint {
  	
  	@ManyToOne
     @JoinColumn(name="songId", nullable=false)
+ 	@JsonBackReference
     private IndexedSong song;
 
     // Getters

@@ -7,10 +7,17 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<div class="main-content">
+<div class="main-content" th:fragment="main-content">
 	    
 	    <h1>My Simple Music Player</h1>
 	    
+	    <div id="song-display">
+	    </div>
+	    <div class="control-panel">
+		    <button onClick="start_playback()" id="btn-play" class="btn btn-default">Play</button>	        
+	    	<button onClick="pause_playback()" id="btn-pause" class="btn btn-default">Pause</button>	
+	    	<button onClick="stop_playback()" id="btn-stop" class="btn btn-default">Stop</button>
+ 		</div>
 	    <table id="song-list" class="table table-hover table-bordered" th:fragment="songlist">
 	       	<thead>
 		        <th>Title</th>
@@ -24,16 +31,10 @@
 		      	</tr>
 	      	</tbody>
 	    </table>
-	    <div class="control-panel">
-		    <button onClick="playback()" id="btn-play" class="btn btn-default">Play</button>	        
-	    	<button onClick="pause_playback()" id="btn-pause" class="btn btn-default">Pause</button>	
-	    	<button onClick="stop_playback()" id="btn-stop" class="btn btn-default">Stop</button>
- 		</div>
  </div>
-
- <input id="currently_playing" type="hidden" name="currently_playing"></input>
  
 <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/d3.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/main.js}"></script>
 
 </body>
