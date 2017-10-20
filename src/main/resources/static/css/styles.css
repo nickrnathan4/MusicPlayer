@@ -5,6 +5,14 @@ table td.songId { display: none; }
 	padding: 50px;
 }
 
+.song-list {
+	padding: 10px;
+}
+
+.control-panel {
+	padding-bottom: 10px;
+}
+
 #song-display {
 	height: 300px;
 	width: 1200px;

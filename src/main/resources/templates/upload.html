@@ -1,0 +1,19 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div>
+		<h2>Upload Song Files</h2>
+		<div th:if="${message}">
+			<p th:text="${message}"/>
+		</div>
+		<form method="POST" enctype="multipart/form-data" action="/uploadSong">
+			Artist Name:
+			<input type="text" name="artistName" />
+			<br/>
+			File to upload:
+			<input type="file" name="file" />
+			<br/>
+			<input type="submit" value="Upload" />
+		</form>
+	</div>
+</body>
+</html>

@@ -9,20 +9,21 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
+import com.amazonaws.services.s3.model.S3Object;
 
 
 public class SongController implements Runnable { 
 
 	boolean running, restart, paused;
 	private int songId;
-	private File file;
+	private S3Object songfile;
 	private int byteChunkSize = 4096;
 	private Thread t;
 	private Object monitor;
 
 	public SongController(Object monitor){
 
-		file = null;
+		songfile = null;
 		paused = false;
         running = false;
         restart = false;
@@ -34,7 +35,9 @@ public class SongController implements Runnable {
 	// ----------------------- PUBLIC METHODS ----------------------------- //
 
 	public void play(){
-        if(file != null && !running){
+		
+        //if(file != null && !running){
+		if(songfile!= null && ! running){
             try{          
             	t = new Thread(this);
             	t.start();
@@ -66,7 +69,7 @@ public class SongController implements Runnable {
     }
 
 	public void stop(){
-        if(file != null){
+        if(songfile != null){
             running = false;
             paused = false;
             songId = 0;
@@ -77,8 +80,8 @@ public class SongController implements Runnable {
         try {       
         	running = true;
         	do {
-        		restart = false;        
-	          	AudioInputStream in = AudioSystem.getAudioInputStream(file);
+        		restart = false;                  
+        		AudioInputStream in = AudioSystem.getAudioInputStream(songfile.getObjectContent());
 	        	AudioInputStream din = null;
 				AudioFormat baseFormat = in.getFormat();
 				AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 
@@ -157,17 +160,25 @@ public class SongController implements Runnable {
 	public int getRunningSongId(){
 		return songId;
 	}
+	
+	public void setSongFile(S3Object songFile){
+		this.songfile = songFile;
+	}
+	
+	public S3Object getSongFile(){
+		return songfile;
+	}
 
 	// ----------------------- PRIVATE METHODS ----------------------------- //
 
 
-	public boolean loadFile(File fin){
-        file = fin;
-        if(file.exists() && file.getName().toLowerCase().endsWith(".mp3") && !running){
+	public boolean loadFile(S3Object mp3){
+		songfile = mp3;
+        if(songfile != null  && !running){
             return true;
         }
         else{
-            file = null;
+        	songfile = null;
             return false;
         }
     }

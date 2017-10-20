@@ -21,7 +21,7 @@ public class IndexedSong {
 	
 	private String songTitle;
     private String songArtist;
-    private String songPath;
+    private String songKey;
     
     
     @OneToMany(mappedBy="song")
@@ -38,8 +38,8 @@ public class IndexedSong {
     public String getSongArtist(){
         return songArtist;
     }
-    public String getSongPath(){
-        return songPath;
+    public String getSongKey(){
+        return songKey;
     }
     public List<KeyPoint> getKeyPoints(){
         return keyPoints;
@@ -55,8 +55,8 @@ public class IndexedSong {
     public void setSongArtist(String a){
         this.songArtist = a;
     }
-    public void setSongPath(String p){
-        this.songPath = p;
+    public void setSongKey(String k){
+        this.songKey = k;
     }
     public void setKeyPoints(List<KeyPoint> kp){
         this.keyPoints = kp;

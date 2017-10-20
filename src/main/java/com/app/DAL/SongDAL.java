@@ -28,19 +28,17 @@ public class SongDAL {
 
 	// ----------------------- PUBLIC METHODS ----------------------------- //
 
-	public void indexSong(String artist, String mp3) {
+	public void indexSong(File mp3, String songName, String artistName, String key) {
 		 
 		 try{
+			 
+			if(mp3.exists()) { 
 
-		 	File f = new File(mp3);			
-			if(f.exists()) { 
+	           	IndexedSong newSong = addNewSong(songName, artistName, key);
 
-	           	String title = mp3.split("\\.")[0];
-	           	IndexedSong newSong = addNewSong(title, artist, mp3);
+	           	if(newSong != null) {
 
-	           	if(newSong != null){
-
-					AudioInputStream in = AudioSystem.getAudioInputStream(f);
+					AudioInputStream in = AudioSystem.getAudioInputStream(mp3);
 					AudioInputStream din = null;
 					AudioFormat baseFormat = in.getFormat();
 					AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 
@@ -58,7 +56,8 @@ public class SongDAL {
 					addKeyPoints(newSong,songArray);
 
 					in.close();
-				}
+				}	         	
+	           	mp3.delete(); 	
 			}
 			else{
 				System.out.println("File path could not be found.");
@@ -89,20 +88,20 @@ public class SongDAL {
 	
 	@SuppressWarnings("unchecked")
 	public IndexedSong getSongByTitle(String title) {
-		
-		IndexedSong song = null;
-	    
+
 		try{
+			IndexedSong song;
 	    	String query = "FROM IndexedSong AS Song WHERE Song.songTitle = ?";
 	    	List<IndexedSong> songs = entityManager.createQuery(query).setParameter(1, title).getResultList();
 	    	if(!songs.isEmpty()){
 	    		song = songs.get(0);
+	    		return song;
 	    	}	    	
 	    } 
 	    catch(Exception e){
 	    	e.printStackTrace();
-	    }
-	    return song;
+	    }	
+	    return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -139,19 +138,15 @@ public class SongDAL {
 
 	// ---------------- PRIVATE METHODS ---------------------- // 
 
-	private IndexedSong addNewSong(String title, String artist, String path) {
+	private IndexedSong addNewSong(String title, String artist, String key) {
 	    
 	    try{
-	    	
 	    	IndexedSong song = getSongByTitle(title);
-	    	
-	    	if(song != null) {
-		    	
-		    	IndexedSong s = new IndexedSong();   
-			    
+	    	if(song == null) {		    	
+		    	IndexedSong s = new IndexedSong();   		   
 			    s.setSongTitle(title);
 			    s.setSongArtist(artist);
-			    s.setSongPath(path);			  
+			    s.setSongKey(key);			  
 			    s.setKeyPoints(new ArrayList<KeyPoint>());			    
 			    entityManager.persist(s);
 			   	return s;

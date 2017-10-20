@@ -1,27 +1,32 @@
 package com.app.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.app.DAL.SongDAL;
 import com.app.models.IndexedSong;
 import com.app.services.SongController;
-
-import java.util.List;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import com.app.services.StorageService;
 
 @Controller
 public class AppController {
 	
 	@Autowired
 	private SongDAL songDAL;
+	
+	@Autowired
+	public StorageService store;
 
 	public Object monitor = new Object();
 	public SongController controller = new SongController(monitor);
@@ -48,14 +53,13 @@ public class AppController {
 			}
 			else {
 				controller.stop();				
-				String fname = songDAL.getSong(id).getSongPath();
-				if(!fname.isEmpty()) {					
-					// Play Song
-					Resource audioFile = new ClassPathResource("audio/" + fname);
-					if(controller.loadFile(audioFile.getFile()) ){
-						controller.setRunningSongId(id);
-						controller.play();
-					}
+				String key = songDAL.getSong(id).getSongKey();
+				if(!key.isEmpty()) {						
+					
+					// Play Song					
+					controller.loadFile(store.fetchFile(key));
+					controller.setRunningSongId(id);
+					controller.play();
 				}
 			}
 		}
@@ -97,5 +101,24 @@ public class AppController {
     	}
     	return song;
     }
+    
+    @RequestMapping("/upload")
+    public String addSong() throws IOException {
+    	return "upload";
+    }
+    
+    @PostMapping("/uploadSong")
+    public String uploadSong(@RequestParam("file") MultipartFile file, 
+    							@RequestParam("artistName") String artistName,
+            RedirectAttributes redirectAttributes) {
+    	
+    	File mp3 = store.loadFile(file);
+		store.storeFile(mp3, file.getOriginalFilename(), artistName);
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/upload";
+    }
+
 
 }

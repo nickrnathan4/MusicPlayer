@@ -11,6 +11,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
 
 jar {
     baseName = 'gs-spring-boot'
@@ -24,6 +25,12 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+dependencyManagement {
+    imports {
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.106'
+    }
+}
+
 dependencies {
 
     compile("org.springframework.boot:spring-boot-starter-web") {
@@ -34,16 +41,12 @@ dependencies {
 
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("com.h2database:h2")
-    runtime files('src/resources/config')
-    runtime files('src/resources/audio')
      
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    
+    compile("com.amazonaws:aws-java-sdk-s3")
     
     compile("org.springframework.boot:spring-boot-devtools") 
 	
     testCompile("junit:junit")
-}
-
-task showMeCache << {
-  configurations.compile.each { println it }
 }
