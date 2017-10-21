@@ -112,7 +112,6 @@ public class SongDAL {
 	    try{
 	    	String query = "SELECT Songs FROM IndexedSong AS Songs ORDER BY Songs.songArtist";
 	    	songs = entityManager.createQuery(query).getResultList();
-	    	// Hibernate.initialize(songs); // eagerly evaluate	
 	    } 
 	    catch(Exception e){
 	    	e.printStackTrace();
@@ -127,7 +126,6 @@ public class SongDAL {
 	    try{
         	IndexedSong song = getSong(songId);
     		kps = song.getKeyPoints();
-    		//Hibernate.initialize(kps); // eagerly evaluate	
 	    } 
 	    catch(Exception e){
 	    	e.printStackTrace();

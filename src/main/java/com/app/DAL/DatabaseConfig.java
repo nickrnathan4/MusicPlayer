@@ -21,9 +21,9 @@ public class DatabaseConfig {
 	  @Bean
 	  public DataSource dataSource() {
 	    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-	    dataSource.setUrl(env.getProperty("spring.datasource.url"));
-	    dataSource.setUsername(env.getProperty("spring.datasource.username"));
-	    dataSource.setPassword(env.getProperty("spring.datasource.password"));
+	    dataSource.setUrl(env.getProperty("JDBC_DATABASE_URL"));
+	    dataSource.setUsername(env.getProperty("JDBC_DATABASE_USERNAME"));
+	    dataSource.setPassword(env.getProperty("JDBC_DATABASE_PASSWORD"));
 	    return dataSource;
 	  }
 	

@@ -23,7 +23,6 @@ import com.amazonaws.services.s3.model.PutObjectResult;
 public class StorageService {
 	
 	private Logger logger = LoggerFactory.getLogger(StorageService.class);
-
 	
 	@Autowired
 	private SongDAL songDAL;
