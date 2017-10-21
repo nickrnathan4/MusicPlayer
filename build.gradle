@@ -49,6 +49,9 @@ dependencies {
     compile("com.amazonaws:aws-java-sdk-s3")
     
     compile("org.springframework.boot:spring-boot-devtools") 
+    
+    compile("commons-io:commons-io:2.5")
+    
 	
 	// Add third party jars
 	compile files("src/main/libs/mp3spi1.9.5.jar","src/main/libs/jl1.0.1.jar","src/main/libs/tritonus_share.jar")

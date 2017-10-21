@@ -2,7 +2,9 @@ package com.app.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import org.apache.commons.io.IOUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -120,5 +122,21 @@ public class AppController {
         return "redirect:/upload";
     }
 
+    @PostMapping("/mp3") 
+    public @ResponseBody byte[] mp3(@RequestParam("songId") String songId) throws IOException {
+    	 try {
+	    	 int id = songId.trim().isEmpty() ? 0 : Integer.parseInt(songId);
+	    	 IndexedSong song = songDAL.getSong(id);
+	    	 String key = song.getSongKey();
+	    	 if(key != null){ 
+	    		 InputStream in = store.fetchFile(key).getObjectContent();
+	    		 return IOUtils.toByteArray(in);
+	    	 }
+    	 }
+    	 catch(Exception e){
+    		 e.printStackTrace();
+    	 }
+    	return null;
+    }
 
 }
