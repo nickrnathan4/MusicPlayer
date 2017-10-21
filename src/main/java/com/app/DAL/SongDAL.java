@@ -5,8 +5,10 @@ import com.app.models.KeyPoint;
 
 import java.util.List;
 import java.util.ArrayList;
-
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import javax.persistence.EntityManager;
@@ -37,8 +39,10 @@ public class SongDAL {
 	           	IndexedSong newSong = addNewSong(songName, artistName, key);
 
 	           	if(newSong != null) {
-
-					AudioInputStream in = AudioSystem.getAudioInputStream(mp3);
+	           		
+	           		InputStream audioSrc = new FileInputStream(mp3);
+	           		InputStream bufferedmp3 = new BufferedInputStream(audioSrc);
+					AudioInputStream in = AudioSystem.getAudioInputStream(bufferedmp3);
 					AudioInputStream din = null;
 					AudioFormat baseFormat = in.getFormat();
 					AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 

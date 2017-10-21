@@ -3,7 +3,7 @@
   songid serial NOT NULL,
   songtitle character varying(200),
   songartist character varying(200),
-  songpath character varying(200),
+  songkey character varying(200),
   CONSTRAINT indexedsong_songid_key PRIMARY KEY (songid)
 )
 WITH (
