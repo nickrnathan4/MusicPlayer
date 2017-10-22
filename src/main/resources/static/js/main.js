@@ -1,15 +1,20 @@
 
 var context;
 var source;
+var buff;
+var timer;
+var paused = false;
+var startedAt = 0;
+var elapsed = 0;
+
 window.addEventListener('load', init, false);
 function init() {
   try {
-    // Fix up for prefixing
     window.AudioContext = window.AudioContext||window.webkitAudioContext;
     context = new AudioContext();
   }
   catch(e) {
-    alert('Web Audio API is not supported in this browser');
+    alert('Web Audio API is not supported in this browser.');
   }
 }
 
@@ -24,46 +29,94 @@ $('#song-list').on('click', '.clickable-row', function(event) {
 });
 
 function start_playback() {
-
-	var songId = $(".td-selected").find('td:first').text();
-	if(songId){
-		
-	    $("#btn-play").prop("disabled", true);  
-
-		var formData = new FormData();
-		formData.append('songId', songId);
-		var request = new XMLHttpRequest();
-		request.responseType = 'arraybuffer';
-		request.open('POST', '/mp3', true);
-		request.onload = function(e) {
-			context.decodeAudioData(request.response, function(buffer) {
-	      	playSound(buffer);
-	      	getSongProfile() 
-		  });
-		}
-		request.send(formData);
+	$("#btn-play").prop("disabled", true); 
+	if(paused) {
+		resume_playback();
 	}
+	else {	
+		var songId = $(".td-selected").find('td:first').text();
+		if(songId){	     
+			var formData = new FormData();
+			formData.append('songId', songId);
+			var request = new XMLHttpRequest();
+			request.responseType = 'arraybuffer';
+			request.open('POST', '/mp3', true);
+			
+			request.onload = function(e) {
+				context.decodeAudioData(request.response, function(buffer) {
+				source = context.createBufferSource(); 
+				source.buffer = buffer;                    
+				source.connect(context.destination);       
+				source.onended = onEnd;
+				source.start(0); 
+				startedAt = context.currentTime;
+				setTimer();
+		      	getSongProfile();
+			  });
+			}
+			request.send(formData);
+		}
+	}
+}
+
+function pause_playback() {
+ 	$("#btn-play").prop("disabled", false); 
+ 	buff = source.buffer;
+	paused = true;
+ 	source.stop();
+ 	elapsed = context.currentTime - startedAt;
 }
 
 function stop_playback() {
 
  	$("#btn-play").prop("disabled", false); 
- 	$("#currently_playing").val("");
- 	source.stop();
+ 	if (source) {          
+            source.disconnect();
+            source.stop(0);
+            source = null;
+        }
+    buff = null;
+ 	paused = false;
+ 	startedAt = 0;
+	elapsed = 0;
+	clearInterval(timer);
+ 	$("#seconds").html(pad(0));
+    $("#minutes").html(pad(0));
      
 }
 
-function playSound(buffer) {
-	try{
-	  source = context.createBufferSource(); // creates a sound source
-	  source.buffer = buffer;                    // tell the source which sound to play
-	  source.connect(context.destination);       // connect the source to the context's destination (the speakers)
-	  source.start(0);                           // play the source now
-	}
-	catch(e){
-		console.log(e);
+function resume_playback() {
+	source = context.createBufferSource(); 
+	source.buffer = buff;                    
+	source.connect(context.destination);       
+	source.onended = onEnd;
+	source.start(0,elapsed); 
+	startedAt = context.currentTime - elapsed;
+	pausedAt = 0;
+	paused = false;
+}
+
+function onEnd(){
+	if(!paused){
+		stop_playback();
 	}
 }
+
+function setTimer(){
+	var sec = source.buffer.duration.toFixed(0);
+	$("#total_seconds").html(pad(sec%60));
+    $("#total_minutes").html(pad(parseInt(sec/60,10)));
+	timer = setInterval( function(){
+			if(!paused) {
+				sec = (context.currentTime - startedAt).toFixed(0);
+			    $("#seconds").html(pad(sec%60));
+			    $("#minutes").html(pad(parseInt(sec/60,10)));
+			}
+		}, 1000);	
+}
+
+function pad ( val ) { return val > 9 ? val : "0" + val; }
+
 
 function getSongProfile() {
 
@@ -72,7 +125,6 @@ function getSongProfile() {
 		$.post("/song", {"songId":songId},
 		    function(returnedData){
 		    	$("svg").remove();
-		    	console.log(returnedData);
 		    	displaySongProfile(returnedData);
 			}).fail(function(xhr, status, error){
 			    console.log("ERROR: ",error);

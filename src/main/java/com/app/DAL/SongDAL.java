@@ -162,7 +162,7 @@ public class SongDAL {
 	private void addKeyPoints(IndexedSong song, List<Integer> keyPoints) {
 
 	    int size = keyPoints.size();
-	    int sampleSize = size / 15000;
+	    int sampleSize = size / 8000;
 	    int insertCount = 0;
 	    try{
 	    	for(int i=0;i<size;++i){
